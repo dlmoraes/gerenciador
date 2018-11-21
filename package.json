@@ -1,0 +1,33 @@
+{
+  "name": "gerenciador",
+  "version": "1.0.0",
+  "description": "Gerenciar tarefas do dia a dia",
+  "productName": "Gerenciador App",
+  "cordovaId": "org.cordova.quasar.app",
+  "author": "Diego Moraes <diegofrost96@gmail.com>",
+  "private": true,
+  "scripts": {
+    "test": "echo \"No test specified\" && exit 0"
+  },
+  "dependencies": {
+    "axios": "^0.18.0",
+    "vue-i18n": "^7.3.3",
+    "vuelidate": "^0.7.4"
+  },
+  "devDependencies": {
+    "node-sass": "^4.10.0",
+    "quasar-cli": "^0.17.0",
+    "sass-loader": "^7.1.0",
+    "strip-ansi": "=3.0.1"
+  },
+  "engines": {
+    "node": ">= 8.9.0",
+    "npm": ">= 5.6.0",
+    "yarn": ">= 1.6.0"
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not ie <= 10"
+  ]
+}
