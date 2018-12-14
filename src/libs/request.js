@@ -1,59 +1,63 @@
 import axios from 'axios'
-import Router from '@/router/index';
-import { getToken, removeToken } from '@/libs/auth'
-import loading from '@/libs/loading'
-import permission from '@/libs/permission'
+import Router from '../router';
+import { getToken, removeToken } from "./auth"
+import loading from './loading'
 import { Notify } from 'quasar'
+import {API_URL} from "../config";
 
 // create an axios instance
 const service = axios.create({
-  baseURL: process.env.API, // api的base_url
+  baseURL: API_URL, // api的base_url
   timeout: 20000 // request timeout
 })
+
+const statusPositive = [200, 201, 204]
 
 // request interceptor
 service.interceptors.request.use(config => {
   // Do something before request is sent
-  if (!permission.check(config)) {
-    Notify.create({
-      message: this.$t("No request permission")
-    })
-    throw "403"
-  }
+  // if (!permission.check(config)) {
+  //   Notify.create({
+  //     message: this.$t("Sem permissão")
+  //   })
+  //   throw "403"
+  // }
   loading.show(config)
   let token = getToken()
   if (token) {
-    config.headers['Authorization'] = 'Bearer ' + token// 让每个请求携带token-- ['X-Token']为自定义key 请根据实际情况自行修改
+    config.headers['Authorization'] = 'Token ' + token// 让每个请求携带token-- ['X-Token']为自定义key 请根据实际情况自行修改
   }
+  console.log('Interceptador de Token => Concluido')
   return config
 }, error => {
   // Do something with request error
-  //console.log(error) // for debug
+  console.log(error) // for debug
   Promise.reject(error)
 })
 
 // respone interceptor
 service.interceptors.response.use(
-  response => {
+  async response => {
     loading.hide(response.config)
-    const res = response.data;
-    if (res.statusCode !== 200) {
+    const res = await response.data;
+    console.log('Interceptador de Resposta => ', response)
+    if (!statusPositive.includes(response.status)) {
       Notify.create({
         message: res.msg
       })
-      return Promise.reject('error');
+      return await Promise.reject('error');
     } else {
 
-      return response;
+      return await response;
     }
   },
   error => {
     loading.hide(error.config)
     if (error.response && error.response.status === 401) {
-      removeToken();
+      // removeToken();
       if (error.config.url.indexOf("logout") === -1) {
         Notify.create({
-          message: this.$t('loginexpired')
+          message: 'Login expirado!'
         })
       }
       setTimeout(() => {
@@ -64,12 +68,12 @@ service.interceptors.response.use(
 
     } else if (error.response && error.response.status === 500) {
       Notify.create({
-        message: this.$t('System error') + '!',
+        message: 'Erro de Sistema' + '!',
         position: 'bottom-right'
       })
     } else if (error.message.indexOf("timeout")>-1) {
       Notify.create({
-        message: this.$t('Network timeout') + '!',
+        message: 'Estorou o tempo limite da rede' + '!',
         position: 'bottom-right'
       })
     }
@@ -77,7 +81,7 @@ service.interceptors.response.use(
 
     } else {
       Notify.create({
-        message: this.$t('Network error') + '!',
+        message: 'Erro na Rede!',
         position: 'bottom-right'
       })
     }

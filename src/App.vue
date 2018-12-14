@@ -28,5 +28,8 @@
   }
 </script>
 
-<style>
+<style scoped>
+  #q-app {
+    background-color: #eeeded;
+  }
 </style>

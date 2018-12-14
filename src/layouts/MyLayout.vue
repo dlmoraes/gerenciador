@@ -1,28 +1,36 @@
 <template>
-  <q-layout :view="view">
-    <q-layout-header v-model="header" :reveal="headerReveal">
+  <q-layout>
+    <q-layout-header v-model="header" :reveal="headerReveal" class="print-hide">
       <q-toolbar color="dark" no-shadow :inverted="$q.theme === 'ios'">
-        <q-btn flat round icon="menu" @click="left = !left" />
-        <q-btn flat round :icon="miniState?'keyboard_arrow_right':'keyboard_arrow_left'" @click="miniState = !miniState" /> &nbsp;&nbsp;&nbsp;
         <q-toolbar-title>
-          Gerenciador
+          <div class="row items-center">
+            <div class="col-xs-6 col-md-2">
+              Gerenciador App
+            </div>
+            <div class="col-xs-6 col-md-4">
+              <q-btn flat round icon="menu" @click="left = !left">
+                <q-tooltip>
+                  Mostrar/Ocultar Menu
+                </q-tooltip>
+              </q-btn>
+              &nbsp &nbsp &nbsp;
+            </div>
+          </div>
         </q-toolbar-title>
-        <!--<q-btn flat dense v-if="!$q.platform.within.iframe" class="q-mr-sm" label="Go to Showcase"-->
-        <!--@click="$router.replace('/showcase')"/>-->
-        <img alt="Quasar logo" src="~assets/avatar.gif" class="avatar_usuario">
-        <!--<q-btn flat round dense icon="menu" @click="right = !right" aria-label="Toggle menu on right side"/>-->
+        <img alt="avatar" src="~assets/avatar.gif" class="avatar_usuario"/>
+        <q-btn flat icon="exit_to_app" @click="logOut">
+          <q-tooltip>
+            Sair do sistema
+          </q-tooltip>
+        </q-btn>
       </q-toolbar>
-      <!--<demo-tabs v-if="$q.theme === 'mat'"/>-->
     </q-layout-header>
 
-    <q-layout-footer v-model="footer" :reveal="footerReveal">
-      <!--<demo-tabs v-if="$q.theme === 'ios'"/>-->
+    <q-layout-footer v-model="footer" :reveal="footerReveal" class="print-hide">
       <q-toolbar inverted>
-        <!--<q-btn flat round dense icon="menu" @click="left = !left" aria-label="Toggle menu on left side"/>-->
         <q-toolbar-title class="text-black q-caption text-weight-medium">
           © 2018. Gerenciador Web App
         </q-toolbar-title>
-        <!--<q-btn flat round dense icon="menu" @click="right = !right" aria-label="Toggle menu on right side"/>-->
       </q-toolbar>
     </q-layout-footer>
 
@@ -32,19 +40,15 @@
       :overlay="leftOverlay"
       :behavior="leftBehavior"
       :breakpoint="leftBreakpoint"
-      content-class="escuro_menu"
+      content-class="escuro_menu print-hide"
       :mini="miniState"
-      @click.capture="drawerClick"
+      @mouseover="miniState = false"
+      @mouseout="miniState = true"
     >
+      <!--Menu-->
       <q-scroll-area class="fit">
-        <!--<div class="row flex-center escuro_menu text-white">-->
-          <!--<div style="padding-right: 2rem;">-->
-            <!--<img alt="Quasar logo" src="~assets/quasar-logo-full.svg"-->
-                 <!--style="height: 46px; width: 46px">-->
-          <!--</div>-->
-        <!--</div>-->
         <q-list no-border>
-          <q-item v-show="!miniState" style="padding:10px">
+          <q-item style="padding:10px">
             <q-item-side avatar color="primary">
               <q-item-tile avatar>
                 <img src="statics/boy-avatar.png">
@@ -53,64 +57,41 @@
             <q-item-main>
               <q-item-tile label>Diego</q-item-tile>
             </q-item-main>
-            <!--<q-item-side right>-->
-              <!--<q-btn push round color="secondary" size="xs" icon="navigation" />-->
-              <!--<q-btn push rounded color="purple" size="xs" label="exit" />-->
-            <!--</q-item-side>-->
-          </q-item>
-          <q-item v-show="miniState" style="padding:10px">
-            <q-item-side avatar color="primary">
-              <q-item-tile avatar>
-                <img src="statics/boy-avatar.png">
-              </q-item-tile>
-              <q-popover anchor="top right" self="top left">
-                <q-list link style="min-width: 100px">
-                  <q-list-header>Diego</q-list-header>
-                  <q-item>
-                    <q-item-main label="User info" />
-                  </q-item>
-                  <q-item>
-                    <q-item-main label="Logout" />
-                  </q-item>
-                </q-list>
-              </q-popover>
-            </q-item-side>
           </q-item>
           <q-list-header class="text-gray">Menu</q-list-header>
-          <q-item @click.native="openURL('http://quasar-framework.org')">
+          <q-item class="text-white" :to="{ name: 'alvos_fichas' }">
             <q-item-side class="text-white" icon="business_center"/>
-            <q-item-main label="Fichas de Negociação"/>
+            <q-item-main class="text-white" label="Fichas de Negociação"/>
           </q-item>
-          <q-item @click.native="openURL('http://quasar-framework.org')">
+          <q-item>
             <q-item-side class="text-white" icon="library_books"/>
             <q-item-main label="Organizador de Faturas"/>
           </q-item>
-          <q-item :to="{ name: 'anotacoes_diario_bordo'}">
+          <q-item link :to="{ name: 'anotacoes_diario_bordo'}" key="anotacoes_diario_bordo">
             <q-item-side class="text-white" icon="assignment"/>
-            <q-item-main label="Diário de Bordo"/>
+            <q-item-main>
+              <q-item-tile class="text-white" label>Diário de Bordo</q-item-tile>
+            </q-item-main>
           </q-item>
         </q-list>
       </q-scroll-area>
     </q-layout-drawer>
 
-    <!--<q-layout-drawer-->
-    <!--side="right"-->
-    <!--v-model="right"-->
-    <!--:overlay="rightOverlay"-->
-    <!--:behavior="rightBehavior"-->
-    <!--:breakpoint="rightBreakpoint"-->
-    <!--:content-class="$q.theme === 'mat' ? 'bg-grey-3' : null"-->
-    <!--:content-style="{fontSize: '16px'}"-->
-    <!--&gt;-->
-    <!--<q-list-header>Right Panel</q-list-header>-->
-    <!--<div v-if="scrolling" style="padding: 25px 16px 16px;">-->
-    <!--<p class="caption" v-for="n in 50" :key="`right-${n}`">-->
-    <!--<em>Right Panel has intended scroll</em>-->
-    <!--</p>-->
-    <!--</div>-->
-    <!--</q-layout-drawer>-->
-
     <q-page-container>
+      <div class="row print-hide">
+        <div class="col cabecalho_pagina header-elements-md-inline">
+          <div class="container_cabecalho_pagina header-elements-md-inline">
+            <div class="titulo_pagina">
+              <h6 class="no-margin">
+                <span class="text-weight-medium">{{tituloPagina}}</span>
+              </h6>
+            </div>
+          </div>
+          <div class="breadcrumb">
+            <breadcrumbs :current-path="list"></breadcrumbs>
+          </div>
+        </div>
+      </div>
       <transition name="fade" mode="out-in">
         <router-view/>
       </transition>
@@ -119,62 +100,67 @@
 </template>
 
 <script>
-  import DemoTabs from 'components/demo-tabs'
-  import {mapState, mapGetters} from 'vuex'
   import {openURL} from 'quasar'
   import {colors} from 'quasar'
+  import Breadcrumbs from "../components/Breadcrumbs";
+  import {getToken} from "../libs/auth";
 
   colors.setBrand('dark', '#35434a');
 
   export default {
-    data () {
+    components: {Breadcrumbs},
+    data() {
       return {
-        miniState: true
+        miniState: true,
+        header: true,
+        headerReveal: true,
+
+        left: true,
+        leftOverlay: false,
+        leftBehavior: "default",
+        leftBreakpoint: 992,
+
+        shrinkMenu: false,
+
+        right: false,
+        rightOverlay: false,
+        rightBehavior: "default",
+        rightBreakpoint: 100,
+
+        footer: false,
+        footerReveal: true,
       }
     },
-    components: {
-      DemoTabs
-    },
     computed: {
-      header: {
-        get() {
-          return this.$store.state.layoutDemo.header
-        },
-        set(val) {
-          this.$store.commit('layoutDemo/setHeader', val)
-        }
+      tituloPagina() {
+        return this.$route.meta.titulo
       },
-      footer: {
-        get() {
-          return this.$store.state.layoutDemo.footer
-        },
-        set(val) {
-          this.$store.commit('layoutDemo/setFooter', val)
+      list() {
+        return this.$route.meta.breadcrumb
+      }
+    },
+    methods: {
+      logOut() {
+        this.$store
+          .dispatch("autenticacao/logout")
+          .then(() => {
+            this.$router.push({
+              name: "login"
+            });
+          })
+          .catch(ex => {
+          });
+      }
+    },
+    created() {
+      try {
+        let token = getToken()
+        if (!token) {
+          this.$router.push('/login')
         }
-      },
-      left: {
-        get() {
-          return this.$store.state.layoutDemo.left
-        },
-        set(val) {
-          this.$store.commit('layoutDemo/setLeft', val)
-        }
-      },
-      right: {
-        get() {
-          return this.$store.state.layoutDemo.right
-        },
-        set(val) {
-          this.$store.commit('layoutDemo/setRight', val)
-        }
-      },
-      ...mapGetters('layoutDemo', ['view']),
-      ...mapState('layoutDemo', [
-        'headerReveal', 'footerReveal',
-        'leftOverlay', 'leftBehavior', 'leftBreakpoint',
-        'rightOverlay', 'rightBehavior', 'rightBreakpoint',
-        'scrolling'
-      ])
+      } catch (e) {
+        this.$router.push('/login')
+      }
     }
   }
 </script>
@@ -185,11 +171,13 @@
     -webkit-animation: moveFromRight 0.5s both ease;
     animation: moveFromRight 0.5s both ease;
   }
+
   .fade-leave-to,
   .fade-leave-active {
     -webkit-animation: moveToLeft 0.5s both ease;
     animation: moveToLeft 0.5s both ease;
   }
+
   @-webkit-keyframes moveToLeft {
     from {
     }
@@ -198,6 +186,7 @@
       -webkit-transform: translateX(-100%);
     }
   }
+
   @keyframes moveToLeft {
     from {
     }
@@ -207,12 +196,14 @@
       transform: translateX(-100%);
     }
   }
+
   @-webkit-keyframes moveFromRight {
     from {
       opacity: 0.7;
       -webkit-transform: translateX(100%);
     }
   }
+
   @keyframes moveFromRight {
     from {
       opacity: 0.7;
@@ -220,4 +211,17 @@
       transform: translateX(100%);
     }
   }
+
+  @media (min-width: 768px)
+
+    .header-elements-md-inline {
+      display: -ms-flexbox;
+      display: flex;
+      -ms-flex-align: center;
+      align-items: center;
+      -ms-flex-pack: justify;
+      justify-content: space-between;
+      -ms-flex-wrap: nowrap;
+      flex-wrap: nowrap;
+    }
 </style>

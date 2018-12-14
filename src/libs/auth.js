@@ -1,8 +1,9 @@
 
-const TokenKey = 'fty-admin-token'
+const TokenKey = 'user'
 
 export function getToken() {
-  return localStorage.getItem(TokenKey)
+  let tk = JSON.parse(localStorage.getItem(TokenKey))
+  return tk.token
 }
 
 export function setToken(token) {

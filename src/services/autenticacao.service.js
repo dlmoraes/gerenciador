@@ -1,6 +1,6 @@
 import { Notify } from 'quasar'
-import { authHeader } from "../helpers/auth_header";
 import { API_URL } from "../config";
+import {setToken, removeToken} from "../libs/auth";
 
 
 export const autenticacaoService = {
@@ -21,7 +21,7 @@ function login(username, password) {
       // login successful if there's a jwt token in the response
       if (user.token) {
         // store user details and jwt token in local storage to keep user logged in between page refreshes
-        localStorage.setItem('user', JSON.stringify(user));
+        setToken(JSON.stringify(user));
       }
       return user;
     })
@@ -35,7 +35,7 @@ function login(username, password) {
 
 function logout() {
   // remove user from local storage to log user out
-  localStorage.removeItem('user');
+  removeToken();
 }
 
 function handleResponse(response) {

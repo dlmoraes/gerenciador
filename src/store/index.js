@@ -2,8 +2,11 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 
 import autenticacao from './autenticacao'
+import anotacoes from './anotacoes'
+import fichas from './fichas'
 import showcase from './showcase'
 import layoutDemo from './layoutDemo'
+import app from './modules/app'
 
 Vue.use(Vuex)
 
@@ -12,7 +15,9 @@ export default function () {
     modules: {
       autenticacao,
       showcase,
-      layoutDemo
+      layoutDemo,
+      fichas,
+      anotacoes
     }
   })
 

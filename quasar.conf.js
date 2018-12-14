@@ -6,28 +6,37 @@ module.exports = function (ctx) {
     plugins: [
       'i18n',
       'axios',
-      'vuelidate'
+      'vuelidate',
+      'json-excel'
     ],
     css: [
       'app.styl'
     ],
     extras: [
       ctx.theme.mat ? 'roboto-font' : null,
-      'material-icons', // at least for QEditor if "ios" theme
-      ctx.theme.ios ? 'ionicons' : null
+      'material-icons',
+      'fontawesome',
+      'ionicons',
       // 'ionicons',
       // 'mdi',
       // 'fontawesome'
     ],
     supportIE: true,
     build: {
+      env: ctx.dev
+        ? { // so on dev we'll have
+          API: JSON.stringify('http://localhost:8000')
+        }
+        : { // and on build (production):
+          API: JSON.stringify('http://localhost:8000')
+        },
       scopeHoisting: true,
-      // vueRouterMode: 'history',
+      vueRouterMode: 'hash',
       // vueCompiler: true,
       // gzip: true,
       // analyze: true,
       // extractCSS: false,
-      extendWebpack (cfg) {
+      extendWebpack(cfg) {
         cfg.module.rules.push({
           enforce: 'pre',
           test: /\.(js|vue)$/,
@@ -45,7 +54,7 @@ module.exports = function (ctx) {
     framework: {
       i18n: 'pt-br',
       all: true,
-      iconSet: ctx.theme.mat ? 'material-icons' : 'ionicons'
+      iconSet: ctx.theme.mat ? 'material-icons' : 'fontawesome'
     },
     animations: 'all',
     ssr: {
@@ -96,7 +105,7 @@ module.exports = function (ctx) {
     },
     electron: {
       // bundler: 'builder', // or 'packager'
-      extendWebpack (cfg) {
+      extendWebpack(cfg) {
         // do something with Electron process Webpack cfg
       },
       packager: {
